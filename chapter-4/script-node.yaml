@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: script-node
+spec:
+  steps:
+    - image: node:14
+      script: |
+        #!/usr/bin/env node
+        console.log("This is some JS code");
