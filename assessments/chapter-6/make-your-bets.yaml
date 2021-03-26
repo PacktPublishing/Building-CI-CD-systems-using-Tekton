@@ -1,0 +1,65 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: draw-card
+spec:
+  results:
+    - name: card
+      description: Card value
+  steps:
+    - name: randomize
+      image: node:14
+      script: |
+        #!/usr/bin/env node
+        const fs = require("fs");
+        const cardValue = Math.floor(Math.random() * 10) + 1;
+        fs.writeFileSync("$(results.card.path)", cardValue.toString());
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: check-result
+spec:
+  params:
+    - name: new-card
+      type: string
+  steps:
+    - name: add-card
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        HAND=17
+        NEWCARD=$(params.new-card)
+        NEWHAND=$(($HAND+$NEWCARD))
+        echo "New hand value is $NEWHAND"
+        if (($NEWHAND > 21))
+          then
+            echo "Busted"
+            exit 1
+        fi
+        echo "You won"
+        exit 0
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: make-your-bets
+spec:
+  tasks:
+    - name: draw
+      taskRef:
+        name: draw-card
+    - name: check
+      taskRef:
+        name: check-result
+      params:
+        - name: new-card
+          value: $(tasks.draw.results.card)
+      runAfter:
+        - draw
+  finally:
+    - name: clean
+      taskRef:
+        name: logger
+      params: 
+        - name: text
+          value: "Cleaning up the table"

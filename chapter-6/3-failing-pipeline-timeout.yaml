@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: failing
+spec:
+  tasks:
+    - name: fail
+      timeout: "0h0m30s"
+      taskRef:
+        name: invalid-image

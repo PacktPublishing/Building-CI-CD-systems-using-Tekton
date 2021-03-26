@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-and-list
+spec:
+  params: 
+    - name: repo
+      type: string 
+      description: Git repository to be cloned 
+      default: https://github.com/joellord/handson-tekton
+  workspaces:
+    - name: source
+  steps:
+    - name: clone
+      image: alpine/git
+      workingDir: $(workspaces.source.path)
+      command:
+        - /bin/sh
+      args: 
+        - '-c'
+        - git clone -v $(params.repo) ./source
+    - name: list
+      image: alpine
+      workingDir: $(workspaces.source.path)
+      command:
+        - /bin/sh
+      args:
+        - "-c"
+        - ls ./source

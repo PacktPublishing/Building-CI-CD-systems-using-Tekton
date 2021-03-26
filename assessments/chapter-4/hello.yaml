@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: more-than-hello
+spec:
+  params:
+    - name: log
+      type: string
+      default: Done sleeping
+    - name: pause-duration
+      type: string
+      default: "1"
+  steps:
+    - name: greet
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ['-c', 'echo Welcome to this task']
+    - name: pause
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ['-c', 'sleep $(params.pause-duration)']
+    - name: log
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ['-c', 'echo $(params.log)']

@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: randomuser
+data:
+  nationality: gb
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: randomuser
+spec:
+  volumes:
+    - name: nationality
+      configMap:
+        name: randomuser
+  results:
+    - name: config
+      description: Configuration file for cURL
+    - name: output
+      description: Output from curl
+  steps:
+    - name: config
+      image: registry.access.redhat.com/ubi8/ubi
+      volumeMounts:
+        - name: nationality
+          mountPath: /var/nat
+      script: |
+        echo "url=https://randomuser.me/api/?inc=name,nat&nat="$(cat /var/nat/nationality) > $(results.config.path)
+    - name: curl
+      image: registry.access.redhat.com/ubi8/ubi
+      command:
+        - curl
+      args:  
+        - -K
+        - $(results.config.path)
+        - -o
+        - $(results.output.path)
+    - name: output
+      image: stedolan/jq
+      script: |
+        FIRST=$(cat $(results.output.path) | jq -r .results[0].name.first)
+        LAST=$(cat $(results.output.path) | jq -r .results[0].name.last)
+        NAT=$(cat $(results.output.path) | jq -r .results[0].nat)
+        echo "New random user created with nationality $NAT"
+        echo $FIRST $LAST

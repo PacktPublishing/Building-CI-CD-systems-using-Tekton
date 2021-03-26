@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sleep-and-log
+spec:
+  params:
+    - name: task-name
+      type: string
+    - name: time
+      type: string
+      default: "1"
+  steps:
+    - name: init
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command: 
+        - /bin/bash
+      args: 
+        - "-c"
+        - "echo [$(date '+%d/%m/%Y %T')] - Task $(params.task-name) Started"
+    - name: sleep
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - sleep $(params.time)
+    - name: log
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command: 
+        - /bin/bash
+      args: 
+        - "-c"
+        - "echo [$(date '+%d/%m/%Y %T')] - Task $(params.task-name) Completed"

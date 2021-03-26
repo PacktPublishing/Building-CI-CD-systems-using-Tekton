@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: results
+spec:
+  params:
+    - name: sides
+      default: "6"
+      type: "string"
+  tasks:
+    - name: intro
+      params:
+        - name: text
+          value: "Preparing to roll the $(params.sides)-sided dice"
+      taskRef:
+        name: logger
+    - name: roll
+      params:
+        - name: sides
+          value: $(params.sides)
+      taskRef:
+        name: dice-roll-result
+      runAfter:
+        - intro
+    - name: result
+      params:
+        - name: text
+          value: "Result from dice roll was $(tasks.roll.results.dice-roll)"
+      taskRef:
+        name: logger
+      runAfter:
+        - roll

@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: die-roll
+spec:
+  steps:
+    - name: greetings
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ['-c', 'echo Rolling 6-sided dice']
+    - name: generate-random-number
+      image: node:14
+      script: |
+        #!/usr/bin/env node
+        const max = 6
+        let randomNumber =  Math.floor(Math.random() * Math.floor(max));
+        console.log(randomNumber + 1);

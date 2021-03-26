@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: git-clone-tr-
+spec:
+  workspaces:
+    - name: source
+      emptyDir: {}
+  taskRef: 
+    name: clone-and-list

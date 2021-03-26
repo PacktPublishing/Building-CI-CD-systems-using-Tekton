@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: clone-and-list
+spec:
+  workspaces:
+    - name: codebase
+  tasks:
+    - name: clone
+      taskRef:
+        name: clone
+      workspaces:
+        - name: source
+          workspace: codebase
+    - name: list
+      taskRef:
+        name: list
+      workspaces:
+        - name: source
+          workspace: codebase
+      runAfter: 
+        - clone
+  finally:
+    - name: clean
+      taskRef:
+        name: cleanup
+      workspaces:
+        - name: source
+          workspace: codebase

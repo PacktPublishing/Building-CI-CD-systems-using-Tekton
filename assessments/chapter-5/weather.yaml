@@ -1,0 +1,66 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: weather
+spec:
+  params:
+    - name: city
+      type: string
+  results:
+    - name: weather
+      description: JSON object with weather definition
+  steps:
+    - name: get-weather
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        curl wttr.in/$(params.city)?format=4 -o $(results.weather.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: weather-extract
+spec:
+  results:
+    - name: temperature
+      description: Current temperature
+  params:
+    - name: weather-data
+      type: string
+  steps:
+    - name: extract-data
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        echo "$(params.weather-data)" | awk '{print $3}' > $(results.temperature.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: weather
+spec:
+  params: 
+    - name: city
+      type: string
+      default: Ottawa
+  tasks:
+    - name: get-weather
+      params:
+        - name: city
+          value: $(params.city)
+      taskRef:
+        name: weather
+    - name: extract-data
+      params:
+        - name: weather-data
+          value: $(tasks.get-weather.results.weather)
+      taskRef:
+        name: weather-extract
+      runAfter: 
+        - get-weather
+    - name: current-temperature
+      params:
+        - name: text
+          value: Current temperature in $(params.city) is $(tasks.extract-data.results.temperature)
+      taskRef:
+        name: logger
+      runAfter: 
+        - extract-data

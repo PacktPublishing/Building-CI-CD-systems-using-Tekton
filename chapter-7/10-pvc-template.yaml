@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-and-ls-pr-
+spec:
+  pipelineSpec:
+    workspaces:
+      - name: codebase
+    tasks:
+      - name: clone
+        taskRef:
+          name: clone
+        workspaces:
+          - name: source
+            workspace: codebase
+      - name: list
+        taskRef:
+          name: list
+        workspaces:
+          - name: source
+            workspace: codebase
+        runAfter: 
+          - clone
+  workspaces:
+    - name: codebase
+      volumeClaimTemplate:
+        spec:
+          accessModes: 
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

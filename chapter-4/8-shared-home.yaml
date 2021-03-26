@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: shared-home
+spec:
+  steps:
+    - name: write
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |
+        cd ~
+        echo Getting ready to write to $(pwd)
+        echo "Secret Message" > message.txt
+    - name: read
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ["-c", "cat ~/message.txt"]

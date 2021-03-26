@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: colours-map
+data:
+  error: "\e[31m"
+  info: "\e[34m"
+  debug: "\e[32m"    
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: configmap
+spec:
+  volumes:
+    - name: colors
+      configMap:
+        name: colors-map
+  steps:
+    - name: log-stuff
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      volumeMounts:
+        - name: colors
+          mountPath: /var/colors
+      script: |
+        echo $(cat /var/colors/info)Logging information
+        echo $(cat /var/colors/debug)Debugging statement
+        echo $(cat /var/colors/error)Colourized error statement

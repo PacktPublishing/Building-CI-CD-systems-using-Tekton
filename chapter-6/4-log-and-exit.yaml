@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: log-and-exit
+spec:
+  params:
+    - name: text
+      type: string
+    - name: exitcode
+      type: string
+  steps:
+    - name: log
+      image: registry.access.redhat.com/ubi8/ubi
+      command:
+        - /bin/bash
+      args: ['-c', 'echo $(params.text)']
+    - name: exit
+      image: registry.access.redhat.com/ubi8/ubi
+      command: 
+        - /bin/bash
+      args: [
+        "-c",
+        "echo 'Exiting with code $(params.exitcode)' && exit $(params.exitcode)"
+      ]

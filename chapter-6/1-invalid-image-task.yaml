@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: invalid-image
+spec:
+  steps:
+    - name: log
+      image: invaliduser/nonexistingimage
+      command:
+        - /bin/bash
+      args: ['-c', 'echo "this task will fail"']

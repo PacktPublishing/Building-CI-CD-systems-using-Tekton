@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: messages
+data:
+  admin-welcome: Welcome master.
+  user-welcome: Hello user.
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: get-role
+spec:
+  results: 
+    - name: role
+  params: 
+    - name: user
+      type: string
+  steps:
+    - name: check-username
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        #!/usr/bin/env bash
+        if [ "$(params.user)" == "admin" ]; then
+          echo "admin" > $(results.role.path)
+        else
+          echo "user" > $(results.role.path)
+        fi
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: role-based-greet
+spec:
+  params:
+    - name: role
+      type: string
+  workspaces:
+    - name: messages
+  steps:
+    - name: greet
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        ROLE=$(params.role)
+        cat $(workspaces.messages.path)/$ROLE-welcome
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: admin-or-not
+spec:
+  params:
+    - name: username
+      default: user
+      type: string
+  workspaces:
+    - name: message-map
+  tasks:
+    - name: validate-admin
+      taskRef:
+        name: get-role
+      params:
+        - name: user
+          value: $(params.username)
+    - name: greetings
+      taskRef:
+        name: role-based-greet
+      params: 
+        - name: role
+          value: $(tasks.validate-admin.results.role)
+      workspaces:
+        - name: messages
+          workspace: message-map
+      runAfter:
+        - validate-admin
+      

@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: cleanup
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: remove-source
+      image: registry.access.redhat.com/ubi8/ubi
+      command:
+        - /bin/bash
+      args: 
+        - "-c"
+        - "rm -rf $(workspaces.source.path)/source"
+    - name: message
+      image: registry.access.redhat.com/ubi8/ubi
+      command:
+        - /bin/bash
+      args:
+        - "-c"
+        - echo All files were deleted

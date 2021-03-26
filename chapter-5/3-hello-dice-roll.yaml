@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: hello-dice-roll
+spec:
+  tasks:
+    - name: first
+      taskRef:
+        name: first-task
+    - name: roll
+      taskRef:
+        name: die-roll
