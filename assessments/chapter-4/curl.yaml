@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: curl
+spec:
+  results:
+    - name: response
+      description: Response from cURL
+  params:
+    - name: url
+      description: URL to cURL
+      type: string
+    - name: args
+      description: Additional arguments
+      type: array
+      default: []
+  steps:
+    - name: curl
+      image: registry.access.redhat.com/ubi8/ubi
+      command:
+        - curl
+      args:  
+        - $(params.args[*])
+        - -o
+        - $(results.response.path)
+        - --url
+        - $(params.url)
+    - name: output
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        echo Output from the cURL to $(params.url)
+        cat $(results.response.path)

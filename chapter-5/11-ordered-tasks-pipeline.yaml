@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: ordered-tasks
+spec:
+  tasks:
+    - name: first
+      params: 
+        - name: task-name
+          value: A
+        - name: time
+          value: "2"
+      taskRef:
+        name: sleep-and-log
+    - name: second
+      params: 
+        - name: task-name
+          value: B
+      taskRef:
+        name: sleep-and-log
+      runAfter:
+        - first
+    - name: third
+      params: 
+        - name: task-name
+          value: C
+        - name: time
+          value: "3"
+      taskRef:
+        name: sleep-and-log
+      runAfter:
+        - first
+    - name: fourth
+      params: 
+        - name: task-name
+          value: D
+      taskRef:
+        name: sleep-and-log
+      runAfter:
+        - second
+        - third

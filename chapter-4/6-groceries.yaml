@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: groceries
+spec:
+  params:
+    - name: grocery-items
+      type: array
+  steps:
+    - name: grocery-list
+      image: node:14
+      args: 
+        - $(params.grocery-items[*])
+      script: |
+        #!/usr/bin/env node
+        const items = process.argv.splice(2);
+        console.log("Grocery List");
+        items.map(i => console.log(`=> ${i}`));

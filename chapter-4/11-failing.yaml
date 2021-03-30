@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: failing
+spec:
+  steps:
+    - image: nonexistinguser/notavalidcontainer
+      command: 
+        - echo "Hello World"

@@ -1,0 +1,61 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deck-api-create
+spec:
+  workspaces: 
+    - name: deck
+  steps:
+    - name: create-deck
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        curl https://deckofcardsapi.com/api/deck/new/shuffle/ -o $(workspaces.deck.path)/deck-id.txt
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deck-api-draw
+spec:
+  workspaces: 
+    - name: deck
+  steps:
+    - name: draw
+      image: node:14
+      script: |
+        #!/usr/bin/env node
+        const fs = require("fs");
+        const https = require("https");
+        const deck = fs.readFileSync("$(workspaces.deck.path)/deck-id.txt");
+        const deckId = JSON.parse(deck).deck_id;
+        const URL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/`;
+        console.log(URL);
+        https.get(URL, response => {
+          response.on("data", data => {
+            let card = JSON.parse(data).cards[0];
+            console.log("Card was drawn from the deck");
+            console.log(`${card.value} of ${card.suit}`);
+          })
+        });
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pick-a-card
+spec:
+  workspaces:
+    - name: api-data
+  tasks:
+    - name: create-deck
+      taskRef:
+        name: deck-api-create 
+      workspaces:
+        - name: deck
+          workspace: api-data
+    - name: pick-card
+      taskRef:
+        name: deck-api-draw
+      workspaces:
+        - name: deck
+          workspace: api-data
+      runAfter:
+        - create-deck

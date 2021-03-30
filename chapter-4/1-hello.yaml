@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata: 
+  name: hello
+spec:
+  steps:
+    - image: registry.access.redhat.com/ubi8/ubi-minimal
+      command: 
+        - /bin/bash
+        - -c
+        - echo "Hello World"

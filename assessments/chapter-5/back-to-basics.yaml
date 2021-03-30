@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: back-to-basics
+spec:
+  params: 
+    - name: who
+      default: "World"
+      type: string
+      description: Who should we say hello to?
+  tasks:
+    - name: say-hello
+      params: 
+        - name: text
+          value: Hello $(params.who)
+      taskRef:
+        name: logger

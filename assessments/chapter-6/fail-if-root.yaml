@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: fail-if-root
+spec:
+  steps:
+    - name: fail-if-root
+      image: registry.access.redhat.com/ubi8/ubi
+      script: |
+        if [ $(whoami) == "root" ]
+          then
+            echo "User is root"
+            exit 1
+        fi
+        exit 0
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: check-root
+spec:
+  tasks:
+    - name: is-root
+      taskRef:
+        name: fail-if-root

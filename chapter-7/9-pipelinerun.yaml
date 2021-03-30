@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-and-ls-pr-
+spec:
+  pipelineRef:
+    name: clone-and-list
+  workspaces:
+    - name: codebase
+      persistentVolumeClaim:
+        claimName: tekton-pvc

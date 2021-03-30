@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: task-reuse
+spec:
+  tasks:
+    - name: say-hello
+      params: 
+        - name: text
+          value: "Hello"
+      taskRef:
+        name: logger
+    - name: log-something
+      params: 
+        - name: text
+          value: "Something else being logged"
+      taskRef:
+        name: logger

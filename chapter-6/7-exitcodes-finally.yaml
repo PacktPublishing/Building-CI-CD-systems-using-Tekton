@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: exitcodes
+spec:
+  tasks:
+    - name: clone
+      taskRef:
+        name: log-and-exit
+      params:
+        - name: text
+          value: "Simulating git clone"
+        - name: exitcode
+          value: "0"
+    - name: unit-tests
+      taskRef:
+        name: log-and-exit
+      params:
+        - name: text
+          value: "Simulating unit testing"
+        - name: exitcode
+          value: "1"
+      runAfter:
+        - clone
+    - name: deploy
+      taskRef:
+        name: log-and-exit
+      params:
+        - name: text
+          value: "Simulating deployment"
+        - name: exitcode
+          value: "0"
+      runAfter:
+        - unit-tests
+  finally:
+    - name: cleanup-task
+      taskRef:
+        name: cleanup

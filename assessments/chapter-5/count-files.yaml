@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-and-count
+spec:
+  params:
+    - name: repo
+      type: string
+  results:
+    - name: file-count
+      description: Number of files
+  steps:
+    - name: clone-and-ls
+      image: alpine/git
+      script: | 
+        git clone $(params.repo) .
+        ls | wc -l > $(results.file-count.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: count-files
+spec:
+  params: 
+    - name: repo-to-analyze
+  tasks:
+    - name: get-list
+      taskRef:
+        name: clone-and-count
+      params: 
+        - name: repo
+          value: $(params.repo-to-analyze)
+    - name: output-count
+      taskRef:
+        name: logger
+      params:
+        - name: text
+          value: "Number of files in $(params.repo-to-analyze): $(tasks.get-list.results.file-count)"
+      runAfter:
+        - get-list
