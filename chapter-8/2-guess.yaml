@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: guess-game
+spec:
+  params:
+    - name: number
+      description: Pick a number
+      type: string
+  tasks:
+    - name: win
+      params:
+        - name: text
+          value: You win
+      taskRef:
+        name: logger
+      when: 
+        - input: $(params.number)
+          operator: in
+          values: ["3"]

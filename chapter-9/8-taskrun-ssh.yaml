@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: git-auth-
+spec:
+  serviceAccountName: git-auth-sa
+  params:
+    - name: private-repo
+      value: git@github.com:joellord/secret-repo
+  taskRef:
+    name: read-file

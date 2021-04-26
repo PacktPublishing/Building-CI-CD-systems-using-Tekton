@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: get-day
+spec:
+  results:
+    - name: daynumber
+      description: day of week, 0 is Sunday
+  steps:
+    - name: get-day
+      image: registry.access.redhat.com/ubi8/ubi
+      script: | 
+        date +%w | tr -d '\n' > $(results.daynumber.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: not-on-weekends
+spec:
+  tasks:
+    - name: getday
+      taskRef:
+        name: get-day
+    - name: work
+      taskRef: 
+        name: logger
+      params:
+        - name: text
+          value: Working...
+      when:
+        - input: $(tasks.getday.results.daynumber)
+          operator: in
+          values: ["1", "2", "3", "4", "5"]
+      runAfter:
+        - getday
