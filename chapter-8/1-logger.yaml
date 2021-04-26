@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: logger
+spec:
+  params:
+    - name: text
+      type: string
+  steps:
+    - name: log
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |
+        DATE=$(date +%d/%m/%Y\ %T)
+        echo [$DATE] - $(params.text)

@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: read-file
+spec:
+  params:
+    - name: private-repo
+      type: string
+  steps:
+    - name: clone
+      image: alpine/git
+      script: |
+        mkdir /temp && cd /temp
+        git clone $(params.private-repo) .
+        cat README.md
