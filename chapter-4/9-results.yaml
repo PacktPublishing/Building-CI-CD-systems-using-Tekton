@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: results
+  name: using-results
 spec:
   results:
     - name: message
