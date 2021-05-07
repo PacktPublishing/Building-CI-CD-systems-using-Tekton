@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: logger
+spec:
+  params:
+    - name: text
+      type: string
+  steps:
+    - name: log
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |
+        DATE=$(date +%d/%m/%Y\ %T)
+        echo [$DATE] - $(params.text)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: something-pushed
+spec:
+  params:
+    - name: repository
+      type: string
+  tasks:
+    - name: log-commit
+      taskRef:
+        name: logger
+      params:
+        - name: text
+          value: A push happened in $(params.repository)
