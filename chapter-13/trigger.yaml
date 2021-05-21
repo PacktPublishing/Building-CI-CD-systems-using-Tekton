@@ -1,0 +1,65 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: event-binding
+spec:
+  params:
+    - name: gitrepositoryurl
+      value: $(body.repository.url)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: commit-tt
+spec:
+  params:
+  - name: gitrepositoryurl
+    description: The git repository url
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: tekton-deploy-
+    spec:
+      pipelineRef:
+        name: tekton-deploy
+      params:
+        - name: repo-url
+          value: $(tt.params.gitrepositoryurl)
+        - name: deployment-name
+          value: tekton-deployment
+        - name: image
+          value: <YOUR_USERNAME>/tekton-lab-app
+        - name: docker-username
+          value: <YOUR_USERNAME>
+        - name: docker-password
+          value: <YOUR_PASSWORD>
+      workspaces:
+        - name: source
+          volumeClaimTemplate:
+            spec:
+              accessModes: 
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: listener
+spec:
+  serviceAccountName: tekton-triggers-example-sa
+  triggers:
+    - name: trigger
+      bindings:
+        - ref: event-binding
+      template:
+        ref: commit-tt
+      interceptors:
+        - github:
+            secretRef:
+              secretName: git-secret
+              secretKey: secretToken
+            eventTypes:
+              - push

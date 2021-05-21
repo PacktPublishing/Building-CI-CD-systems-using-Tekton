@@ -1,0 +1,19 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: commit-tt
+spec:
+  params:
+  - name: gitrepositoryurl
+    description: The git repository url
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: something-committed-
+    spec:
+      pipelineRef:
+        name: something-committed
+      params:
+      - name: repository
+        value: $(tt.params.gitrepositoryurl)

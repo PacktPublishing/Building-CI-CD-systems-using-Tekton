@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: colours-map
+  name: colors-map
 data:
   error: "\e[31m"
   info: "\e[34m"

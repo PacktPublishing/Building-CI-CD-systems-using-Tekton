@@ -1,0 +1,88 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tekton-deploy
+spec:
+  params:
+    - name: repo-url
+    - name: deployment-name
+    - name: image
+    - name: docker-username
+    - name: docker-password
+  workspaces:
+    - name: source
+  tasks:
+    - name: clone
+      taskRef: 
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.repo-url)
+      workspaces:
+        - name: output
+          workspace: source
+    - name: install
+      taskRef:
+        name: npm
+      params:
+        - name: ARGS
+          value: 
+            - install
+      workspaces:
+        - name: source
+          workspace: source
+      runAfter:
+        - clone
+    - name: lint
+      taskRef:
+        name: npm
+      params:
+        - name: ARGS
+          value: 
+            - run 
+            - lint
+      workspaces:
+        - name: source
+          workspace: source
+      runAfter:
+        - install
+    - name: test
+      taskRef:
+        name: npm
+      params:
+        - name: ARGS
+          value: 
+            - run 
+            - test
+      workspaces:
+        - name: source
+          workspace: source
+      runAfter:
+        - install
+    - name: build-push
+      taskRef:
+        name: build-push
+      params:
+        - name: image
+          value: $(params.image)
+        - name: username
+          value: $(params.docker-username)
+        - name: password
+          value: $(params.docker-password)
+      workspaces:
+        - name: source
+          workspace: source
+      runAfter:
+        - test
+        - lint
+    - name: deploy
+      taskRef:
+        name: kubernetes-actions
+      params:
+        - name: args
+          value: 
+            - rollout 
+            - restart 
+            - deployment/$(params.deployment-name)
+      runAfter:
+        - build-push

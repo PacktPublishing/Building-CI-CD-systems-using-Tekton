@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: guess-game
+  name: guess-game-notin
 spec:
   params:
     - name: number

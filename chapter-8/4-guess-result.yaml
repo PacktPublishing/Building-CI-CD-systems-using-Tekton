@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: random-number-generator
+spec:
+  results:
+    - name: random-number
+      description: random number
+  steps:
+    - name: generate-number
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |
+        NUMBER=$((1 + $RANDOM % 3))
+        echo Random number picked, result is $NUMBER
+        echo -n $NUMBER > $(results.random-number.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: guess-result
+spec:
+  tasks:
+    - name: generate
+      taskRef: 
+        name: random-number-generator
+    - name: win
+      params:
+        - name: text
+          value: You win
+      taskRef:
+        name: logger
+      when: 
+        - input: $(tasks.generate.results.random-number)
+          operator: in
+          values: ["3"]
+      runAfter:
+        - generate
+    - name: lose
+      params:
+        - name: text
+          value: You lose
+      taskRef:
+        name: logger
+      when:
+        - input: $(tasks.generate.results.random-number)
+          operator: notin
+          values: ["3"]
+      runAfter:
+        - generate

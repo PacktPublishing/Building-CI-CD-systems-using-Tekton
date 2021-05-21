@@ -1,0 +1,19 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: listener
+spec:
+  serviceAccountName: tekton-triggers-example-sa
+  triggers:
+    - name: trigger
+      bindings:
+        - ref: event-binding
+      template:
+        ref: commit-tt
+      interceptors:
+        - github:
+            secretRef:
+              secretName: git-secret
+              secretKey: secretToken
+            eventTypes:
+              - push

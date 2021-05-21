@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-push
+spec:
+  params:
+    - name: image
+    - name: username
+    - name: password
+  workspaces:
+    - name: source
+  steps:
+    - name: build-image
+      image: quay.io/buildah/stable:v1.18.0      
+      securityContext:
+        privileged: true
+      script: |
+        cd $(workspaces.source.path)
+        buildah bud --layers -t $(params.image) .
+        buildah login -u $(params.username) -p $(params.password) docker.io 
+        buildah push $(params.image)
