@@ -10,10 +10,10 @@ spec:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: something-committed-
+      generateName: something-pushed-
     spec:
       pipelineRef:
-        name: something-committed
+        name: something-pushed
       params:
       - name: repository
         value: $(tt.params.gitrepositoryurl)
