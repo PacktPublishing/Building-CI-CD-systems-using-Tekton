@@ -9,7 +9,7 @@ spec:
       bindings:
         - ref: event-binding
       template:
-        ref: commit-tt
+        ref: push-trigger-template
       interceptors:
         - github:
             secretRef:

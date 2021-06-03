@@ -4,5 +4,5 @@ metadata:
   name: event-binding
 spec:
   params:
-    - name: gitrepositoryurl
+    - name: git-repository-url
       value: $(body.repository.url)

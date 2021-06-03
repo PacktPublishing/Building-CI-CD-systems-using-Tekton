@@ -22,7 +22,7 @@ spec:
     - name: repository
       type: string
   tasks:
-    - name: log-commit
+    - name: log-push
       taskRef:
         name: logger
       params:
