@@ -28,7 +28,10 @@ All of the code is organized into folders. For example, Chapter02.
 
 The code will look like the following:
 ```
-- name: tekton-pod image: <YOUR_USERNAME>/tekton-lab-app        ports:        - containerPort: 3000
+- name: tekton-pod 
+  image: <YOUR_USERNAME>/tekton-lab-app        
+  ports:        
+  - containerPort: 3000
 ```
 
 ### Code in Action
