@@ -10,13 +10,13 @@ This is the code repository for [Building CI/CD systems using Tekton](https://ww
 Tekton is a powerful yet flexible Kubernetes-native open-source framework for creating continuous integration and continuous delivery (CI/CD) systems. It enables you to build, test, and deploy across multiple cloud providers or on-premise systems. 
 
 This book covers the following exciting features:
-Understand the basic principles behind CI/CD
-Explore what tasks are and how they can be made reusable and flexible
-Focus on how to use Tekton objects to compose a robust pipeline
-Share data across a pipeline using volumes and workspaces
-Discover more advanced topics such as WhenExpressions and Secrets to build complex pipelines
-Understand what Tekton Triggers are and how they can be used to automate CI/CD pipelines
-Build a full CI/CD pipeline that automatically deploys an application to a Kubernetes cluster when an update is done to a code repository
+* Understand the basic principles behind CI/CD
+* Explore what tasks are and how they can be made reusable and flexible
+* Focus on how to use Tekton objects to compose a robust pipeline
+* Share data across a pipeline using volumes and workspaces
+* Discover more advanced topics such as WhenExpressions and Secrets to build complex pipelines
+* Understand what Tekton Triggers are and how they can be used to automate CI/CD pipelines
+* Build a full CI/CD pipeline that automatically deploys an application to a Kubernetes cluster when an update is done to a code repository
 
 If you feel this book is for you, get your [copy](https://www.amazon.com/dp/1801078211) today!
 
