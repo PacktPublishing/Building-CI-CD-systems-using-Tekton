@@ -37,7 +37,7 @@ The code will look like the following:
 ### Code in Action
 Click on following link to see the Code in Action:
 
-[Youtube link](https://bit.ly/39ovGd6)
+[Youtube link](https://bit.ly/2VmDYy0)
 
 
 **Following is what you need for this book:**
@@ -58,9 +58,6 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 
 * Hands-on Kubernetes on Azure - Third Edition [[Packt]](https://www.packtpub.com/product/hands-on-kubernetes-on-azure-third-edition/9781801079945?utm_source=github&utm_medium=repository&utm_campaign=9781801079945) [[Amazon]](https://www.amazon.com/dp/1801079943)
 
-*  [[Packt]]() [[Amazon]](https://www.amazon.com/dp/)
-
-*  [[Packt]]() [[Amazon]](https://www.amazon.com/dp/)
 
 ## Get to Know the Author
 **Joel Lord**
