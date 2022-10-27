@@ -64,3 +64,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 is passionate about the web and technology in general. He likes to learn new things, but most of all, he wants to share his discoveries. He does so by traveling to various conferences all across the globe. He graduated from college with a degree in computer programming in the last millennium. Apart from a little break to get his BSc in computational astrophysics, he has always worked in the industry. In his daily job, Joel is a developer advocate with MongoDB, where he connects with software engineers to help them make the web better by using best practices around JavaScript. In his free time, he can be found stargazing on a campground somewhere or brewing a fresh batch of beer in his garage.
 
 
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781801078214">https://packt.link/free-ebook/9781801078214 </a> </p>
